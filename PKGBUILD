@@ -3,7 +3,7 @@ pkgbase="focal-git"
 pkgname=('focal-hyprland-git' 'focal-sway-git')
 _pkgname=focal
 pkgver=r42.4c86317
-pkgrel=1
+pkgrel=2
 pkgdesc="Rofi menu for capturing and copying screenshots or videos on hyprland / sway."
 arch=(x86_64 aarch64)
 url="https://github.com/iynaix/focal"
@@ -14,7 +14,7 @@ optdepends=('tesseract: OCR support'
 source=("$_pkgname::git+$url.git")
 sha256sums=('SKIP')
 
-_depends=(glibc gcc-libs ffmpeg grim rofi-wayland slurp wf-recorder wl-clipboard)
+_depends=(glibc gcc-libs ffmpeg grim hyprpicker rofi-wayland slurp wf-recorder wl-clipboard)
 
 pkgver() {
   cd "$_pkgname"
