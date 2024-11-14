@@ -2,8 +2,8 @@
 pkgbase="focal-git"
 pkgname=('focal-hyprland-git' 'focal-sway-git')
 _pkgname=focal
-pkgver=r42.4c86317
-pkgrel=2
+pkgver=r53.297e006
+pkgrel=3
 pkgdesc="Rofi menu for capturing and copying screenshots or videos on hyprland / sway."
 arch=(x86_64 aarch64)
 url="https://github.com/iynaix/focal"
@@ -24,13 +24,13 @@ pkgver() {
 build() {
   # fix ELF file ('usr/bin/focal') lacks GNU_PROPERTY_X86_FEATURE_1_SHSTK.
   export RUSTFLAGS='-C link-args=-Wl,-z,shstk'
-  RUSTUP_TOOLCHAIN=stable cargo build --release --frozen --manifest-path=$_pkgname/Cargo.toml --target-dir=$_pkgname/target --no-default-features --features="hyprland,ocr"
+  RUSTUP_TOOLCHAIN=stable cargo build --release --locked --manifest-path=$_pkgname/Cargo.toml --target-dir=$_pkgname/target --no-default-features --features="hyprland,ocr,video,waybar"
 }
 
 build_focal-sway-git() {
   # fix ELF file ('usr/bin/focal') lacks GNU_PROPERTY_X86_FEATURE_1_SHSTK.
   export RUSTFLAGS='-C link-args=-Wl,-z,shstk'
-  RUSTUP_TOOLCHAIN=stable cargo build --release --frozen --manifest-path=$_pkgname/Cargo.toml --target-dir=$_pkgname/target --no-default-features --features="sway,ocr"
+  RUSTUP_TOOLCHAIN=stable cargo build --release --locked --manifest-path=$_pkgname/Cargo.toml --target-dir=$_pkgname/target --no-default-features --features="sway,ocr,video,waybar"
 }
 
 _package() {
@@ -44,6 +44,12 @@ _package() {
     install -Dm644 "$_pkgname/target/release/$cmd.bash" "$pkgdir/usr/share/bash-completion/completions/$cmd"
     install -Dm644 "$_pkgname/target/release/$cmd.zsh" "$pkgdir/usr/share/zsh/site-functions/_$cmd"
     install -Dm644 "$_pkgname/target/release/$cmd.fish" "$pkgdir/usr/share/fish/vendor_completions.d/$cmd.fish"
+  done
+
+  for section in 1 2 3 4 5 6 7 8; do
+    while IFS= read -r -d '' file; do
+        install -Dm644 "$file" "$pkgdir/usr/share/man/man$section/$(basename "$file")"
+    done < <(find "$_pkgname/target/man" -type f -name "*.$section" -print0)
   done
 }
 
